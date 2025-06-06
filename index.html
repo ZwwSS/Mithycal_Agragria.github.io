@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil Estudiante</title>
+  <style>
+    /* Reset básico */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f2f5f8;
+      font-family: Arial, sans-serif;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    /* Contenedor principal tipo tarjeta */
+    .profile-card {
+      background-color: #fff;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    /* Área de imagen de perfil */
+    .profile-header {
+      background-color: #fafafa;
+      padding: 30px 0 10px 0;
+      display: flex;
+      justify-content: center;
+    }
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #fff;
+      /* Sombra ligera alrededor de la foto */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background-color: #ddd; /* color base si no hay imagen */
+    }
+    /* Sección de texto con nombre e IDs */
+    .profile-info {
+      padding: 15px 20px;
+      text-align: center;
+    }
+    .profile-info h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      color: #222;
+    }
+    .profile-info p {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      color: #555;
+    }
+    /* Separador horizontal */
+    .divider {
+      height: 1px;
+      background-color: #e0e0e0;
+      margin: 10px 0;
+    }
+    /* Tabla con datos adicionales */
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    .details-table td {
+      padding: 10px 15px;
+      font-size: 0.95rem;
+      vertical-align: top;
+    }
+    .details-table td.label {
+      font-weight: bold;
+      width: 40%;
+      color: #444;
+    }
+    .details-table td.value {
+      color: #555;
+    }
+    /* Alternar color: filas pares en gris claro */
+    .details-table tr:nth-child(even) td {
+      background-color: #f7f7f7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-card">
+    <!-- Acá usamos la URL que enviaste -->
+    <div class="profile-header">
+      <img src="https://thumbor.meilleursagents.com/knD_JnPwiMYMCgL_UIV-rLzSM7g=/230x230/contacts/be/66/578bb793edba8ea.2212690.png" alt="Foto de perfil">
+    </div>
+
+    <!-- Nombre, código y DNI -->
+    <div class="profile-info">
+      <h2>Jordan Felix Rodriguez Sanchez</h2>
+      <p><strong>20240471</strong> - Pregrado</p>
+      <p><strong>DNI</strong> 75279038</p>
+
+      <div class="divider"></div>
+    </div>
+
+    <!-- Tabla con Facultad, Especialidad, Plan de Estudios, Tutor -->
+    <table class="details-table">
+      <tr>
+        <td class="label">Facultad</td>
+        <td class="value">Economía y Planificación</td>
+      </tr>
+      <tr>
+        <td class="label">Especialidad</td>
+        <td class="value">Economía</td>
+      </tr>
+      <tr>
+        <td class="label">Plan de Estudios</td>
+        <td class="value">2019-I</td>
+      </tr>
+      <tr>
+        <td class="label">Tutor</td>
+        <td class="value">
+          Juan Felipe Magallanes Díaz<br>
+          <a href="mailto:jmagallanes@lamolina.edu.pe">jmagallanes@lamolina.edu.pe</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</body>
+</html>
