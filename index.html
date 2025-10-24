@@ -2,135 +2,370 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Perfil Estudiante</title>
   <style>
-    /* Reset básico */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#f2f5f8;font-family:Arial,Helvetica,sans-serif;color:#333}
+
+    /* ===== Colores ===== */
+    :root{
+      --teal:#1e9aa8;         /* azul verdoso */
+      --teal-ink:#187f8a;     /* tono más oscuro para iconos/bordes */
+      --card-gray:#f7f7f7;
+      --muted:#557;
     }
-    body {
-      background-color: #f2f5f8;
-      font-family: Arial, sans-serif;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      padding: 20px;
+
+    /* ===== CABECERA ===== */
+    .appbar{
+      position:sticky;top:0;z-index:5;background:#fff;
+      height:56px;display:flex;align-items:center;
+      box-shadow:0 1px 4px rgba(0,0,0,.08);padding:0 10px;gap:10px;
+      display:none; /* visible solo en modo perfil */
     }
-    /* Contenedor principal tipo tarjeta */
-    .profile-card {
-      background-color: #fff;
-      width: 100%;
-      max-width: 400px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      overflow: hidden;
+    .icon-btn{
+      width:34px;height:34px;border-radius:8px;border:1px solid #e7ecf3;
+      background:#fff;display:inline-flex;align-items:center;justify-content:center;
+      cursor:pointer;
     }
-    /* Área de imagen de perfil */
-    .profile-header {
-      background-color: #fafafa;
-      padding: 30px 0 10px 0;
-      display: flex;
-      justify-content: center;
+    .icon-btn svg{width:18px;height:18px}
+    .icon-stroke{stroke:var(--teal-ink)}
+
+    .center-stack{display:flex;align-items:center;gap:10px}
+    .stack{display:flex;flex-direction:column;line-height:1.05;min-width:120px}
+    .faculty{color:var(--teal);font-weight:700;font-size:14px}
+    .code{
+      color:var(--teal);font-weight:700;font-size:14px;
+      text-decoration:underline;text-underline-offset:6px;
     }
-    .profile-header img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #fff;
-      /* Sombra ligera alrededor de la foto */
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      background-color: #ddd; /* color base si no hay imagen */
+    .vline{width:2px;height:24px;background:var(--teal);border-radius:2px;align-self:center}
+
+    .spacer{flex:1}
+    .right{display:flex;align-items:center;gap:10px;min-width:0}
+
+    /* Campana + badge 0 */
+    .bell-wrap{position:relative}
+    .badge{
+      position:absolute;top:-5px;right:-5px;min-width:14px;height:14px;
+      padding:0 3px;border-radius:7px;background:#9aa9c7;color:#fff;
+      font-size:10px;display:flex;align-items:center;justify-content:center;
     }
-    /* Sección de texto con nombre e IDs */
-    .profile-info {
-      padding: 15px 20px;
-      text-align: center;
+
+    /* Avatar SOLO iniciales (sin foto en cabecera) */
+    .avatar{
+      width:28px;height:28px;border-radius:50%;background:#34b27c;color:#fff;
+      display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;overflow:hidden;
     }
-    .profile-info h2 {
-      font-size: 1.3rem;
-      margin-bottom: 8px;
-      color: #222;
+    /* Nunca mostramos imagen en cabecera */
+    .avatar img{display:none !important}
+    .name{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48vw}
+
+    /* ===== CONTENEDOR ===== */
+    .container{max-width:980px;margin:18px auto;padding:0 16px}
+
+    /* ===== FORM ===== */
+    .form{
+      background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08);
+      padding:16px;margin-bottom:18px;
     }
-    .profile-info p {
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-      color: #555;
+    .form h3{font-size:16px;margin-bottom:10px;color:#222}
+    .grid{display:grid;gap:12px;grid-template-columns:repeat(6,1fr)}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{font-size:12px;color:#555}
+    .field input{padding:10px 12px;border:1px solid #dde3ea;border-radius:6px;font-size:14px;background:#fafbfd}
+    .field input[type="file"]{padding:8px;background:transparent}
+    .inline-note{font-size:12px;color:#667}
+    .form-actions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--teal);color:#fff}
+    .btn-ghost{background:#e8f6f8;color:var(--teal)}
+
+    /* ===== CARD PERFIL ===== */
+    .profile-card{
+      background:#fff;width:100%;max-width:400px;border-radius:8px;
+      box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;margin-inline:auto;display:none
     }
-    /* Separador horizontal */
-    .divider {
-      height: 1px;
-      background-color: #e0e0e0;
-      margin: 10px 0;
+    .profile-header{background:#fafafa;padding:30px 0 10px;display:flex;justify-content:center}
+    .profile-header img{
+      width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #fff;
+      box-shadow:0 2px 6px rgba(0,0,0,.1);background:#ddd
     }
-    /* Tabla con datos adicionales */
-    .details-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    .details-table td {
-      padding: 10px 15px;
-      font-size: 0.95rem;
-      vertical-align: top;
-    }
-    .details-table td.label {
-      font-weight: bold;
-      width: 40%;
-      color: #444;
-    }
-    .details-table td.value {
-      color: #555;
-    }
-    /* Alternar color: filas pares en gris claro */
-    .details-table tr:nth-child(even) td {
-      background-color: #f7f7f7;
+    .profile-info{padding:15px 20px;text-align:center}
+    .profile-info h2{font-size:1.3rem;margin-bottom:8px;color:#222;line-height:1.25}
+    .profile-info p{font-size:.95rem;margin-bottom:4px;color:#555}
+    .divider{height:1px;background:#e0e0e0;margin:10px 0}
+
+    .details-table{width:100%;border-collapse:collapse;margin-top:15px}
+    .details-table td{padding:10px 15px;font-size:.95rem;vertical-align:top}
+    .details-table .label{font-weight:bold;width:40%;color:#444}
+    .details-table .value{color:#555;word-break:break-word}
+    /* Patrón explícito: BLANCO (odd), GRIS (even) */
+    .details-table tr:nth-child(odd) td{background:#fff}
+    .details-table tr:nth-child(even) td{background:var(--card-gray)}
+
+    /* Ocultar enlace de edición en el perfil (mantengo la función en el menú) */
+    .edit-link{display:none !important}
+
+    @media (max-width:720px){
+      .grid{grid-template-columns:1fr}
+      .name{max-width:54vw}
     }
   </style>
 </head>
 <body>
 
-  <div class="profile-card">
-    <!-- Acá usamos la URL que enviaste -->
-    <div class="profile-header">
-      <img src="https://thumbor.meilleursagents.com/knD_JnPwiMYMCgL_UIV-rLzSM7g=/230x230/contacts/be/66/578bb793edba8ea.2212690.png" alt="Foto de perfil">
+  <!-- CABECERA (visible en modo perfil) -->
+  <header class="appbar" id="appbar" aria-label="Barra superior">
+    <!-- Menú (3 rayas) => volver a editar -->
+    <button class="icon-btn" id="btnMenu" title="Editar perfil">
+      <svg viewBox="0 0 24 24" fill="none" class="icon-stroke" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <!-- Centro apilado: Facultad arriba / línea / Código abajo subrayado -->
+    <div class="center-stack">
+      <div class="stack">
+        <span class="faculty" id="uiFaculty">Pesquería</span>
+        <span class="code" id="uiCode">20241563</span>
+      </div>
+      <div class="vline" aria-hidden="true"></div>
     </div>
 
-    <!-- Nombre, código y DNI -->
-    <div class="profile-info">
-      <h2>Jordan Felix Rodriguez Sanchez</h2>
-      <p><strong>20240471</strong> - Pregrado</p>
-      <p><strong>DNI</strong> 75279038</p>
+    <div class="spacer"></div>
 
-      <div class="divider"></div>
+    <!-- Derecha: Campana + avatar (solo iniciales) + nombre -->
+    <div class="right">
+      <div class="bell-wrap">
+        <button class="icon-btn" id="btnBell" title="Notificaciones" aria-label="Notificaciones">
+          <svg viewBox="0 0 24 24" fill="none" class="icon-stroke" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9z"></path>
+            <path d="M13.7 21a2 2 0 01-3.4 0"></path>
+          </svg>
+        </button>
+        <span class="badge" id="bellCount">0</span>
+      </div>
+
+      <div class="avatar" id="uiAvatar">
+        <span id="avatarInitials">OT</span>
+        <!-- La imagen en cabecera queda forzada a oculto -->
+        <img id="avatarImg" alt="Avatar">
+      </div>
+      <div class="name" id="uiName">Oliver Pedro Tamara Raymundo</div>
     </div>
+  </header>
 
-    <!-- Tabla con Facultad, Especialidad, Plan de Estudios, Tutor -->
-    <table class="details-table">
-      <tr>
-        <td class="label">Facultad</td>
-        <td class="value">Economía y Planificación</td>
-      </tr>
-      <tr>
-        <td class="label">Especialidad</td>
-        <td class="value">Economía</td>
-      </tr>
-      <tr>
-        <td class="label">Plan de Estudios</td>
-        <td class="value">2019-I</td>
-      </tr>
-      <tr>
-        <td class="label">Tutor</td>
-        <td class="value">
-          Juan Felipe Magallanes Díaz<br>
-          <a href="mailto:jmagallanes@lamolina.edu.pe">jmagallanes@lamolina.edu.pe</a>
-        </td>
-      </tr>
-    </table>
+  <div class="container">
+    <!-- PANTALLA 1: FORMULARIO -->
+    <section class="form" id="screenForm">
+      <h3>Personaliza tu perfil</h3>
+      <p class="inline-note">El nivel es <strong>Pregrado</strong> por defecto.</p>
+
+      <div class="grid">
+        <div class="field" style="grid-column: span 3;">
+          <label for="name">Nombre completo</label>
+          <input id="name" type="text" placeholder="Nombre y apellidos" value="Oliver Pedro Tamara Raymundo">
+        </div>
+
+        <div class="field">
+          <label for="code">Código</label>
+          <input id="code" type="text" placeholder="Ej. 20241563" value="20241563">
+        </div>
+
+        <div class="field">
+          <label for="dni">DNI</label>
+          <input id="dni" type="text" placeholder="DNI" value="72773302">
+        </div>
+
+        <div class="field">
+          <label for="faculty">Facultad</label>
+          <input id="faculty" type="text" value="Pesquería">
+        </div>
+
+        <div class="field">
+          <label for="plan">Plan de Estudios</label>
+          <input id="plan" type="text" value="2019-I">
+        </div>
+
+        <div class="field" style="grid-column: span 2;">
+          <label for="tutor">Tutor</label>
+          <input id="tutor" type="text" value="Rosario Socorro Manchay Jimenez">
+        </div>
+
+        <div class="field" style="grid-column: span 2;">
+          <label for="email">Correo tutor</label>
+          <input id="email" type="email" value="rmanchay@lamolina.edu.pe">
+        </div>
+
+        <div class="field" style="grid-column: span 3;">
+          <label for="photoFile">Foto de perfil (archivo)</label>
+          <input id="photoFile" type="file" accept="image/*">
+        </div>
+
+        <div class="field" style="grid-column: span 3;">
+          <label for="photoUrl">Foto de perfil (URL) — opcional</label>
+          <input id="photoUrl" type="url" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" id="generateBtn">Generar perfil</button>
+        <button class="btn btn-ghost" id="clearAllBtn" type="button">Limpiar todo</button>
+      </div>
+    </section>
+
+    <!-- PANTALLA 2: PERFIL -->
+    <div class="profile-card" id="screenProfile">
+      <div class="profile-header">
+        <img id="profilePhoto" src="" alt="Foto de perfil">
+      </div>
+
+      <div class="profile-info">
+        <h2 id="cardName">—</h2>
+        <p><span id="cardCode">—</span> - <span id="cardLevel">Pregrado</span></p>
+        <p><strong>DNI</strong> <span id="cardDni">—</span></p>
+        <div class="divider"></div>
+      </div>
+
+      <table class="details-table">
+        <tr>
+          <td class="label">Facultad</td>
+          <td class="value" id="cardFaculty">—</td>
+        </tr>
+        <tr>
+          <td class="label">Plan de Estudios</td>
+          <td class="value" id="cardPlan">—</td>
+        </tr>
+        <tr>
+          <td class="label">Tutor</td>
+          <td class="value" id="cardTutor">
+            —<br>
+            <a id="cardEmail" href="#">—</a>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Ya no se muestra "Editar datos" -->
+      <span class="edit-link" id="editLink">Editar datos</span>
+    </div>
   </div>
 
+  <script>
+    const $ = (s)=>document.querySelector(s);
+
+    // Secciones
+    const appbar = $('#appbar');
+    const screenForm = $('#screenForm');
+    const screenProfile = $('#screenProfile');
+
+    // Form
+    const nameI=$('#name'), codeI=$('#code'), dniI=$('#dni'),
+          facultyI=$('#faculty'), planI=$('#plan'),
+          tutorI=$('#tutor'), emailI=$('#email'),
+          photoFileI=$('#photoFile'), photoUrlI=$('#photoUrl');
+
+    // Header
+    const uiFaculty=$('#uiFaculty'), uiCode=$('#uiCode'), uiName=$('#uiName');
+    const avatarInitials=$('#avatarInitials'); /* imagen en cabecera permanece oculta por CSS */
+
+    // Card
+    const profilePhoto=$('#profilePhoto'), cardName=$('#cardName'),
+          cardCode=$('#cardCode'), cardLevel=$('#cardLevel'),
+          cardDni=$('#cardDni'), cardFaculty=$('#cardFaculty'),
+          cardPlan=$('#cardPlan'), cardTutor=$('#cardTutor'), cardEmail=$('#cardEmail');
+
+    const DEFAULT_PHOTO = 'data:image/svg+xml;utf8,'+encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+        <rect width="240" height="240" fill="#dddddd"/>
+        <circle cx="120" cy="90" r="50" fill="#c7c7c7"/>
+        <rect x="45" y="150" width="150" height="60" rx="30" fill="#c7c7c7"/>
+      </svg>`);
+
+    function getInitials(n){if(!n)return'??';const p=n.trim().split(/\s+/);return ((p[0]||'')[0]||'')+((p[p.length-1]||'')[0]||'') }
+
+    function setDefaultPhoto(){ profilePhoto.src=DEFAULT_PHOTO; }
+
+    // Storage
+    const KEY='studentProfileData_v4', FLAG='studentProfileSaved_v4';
+    const save=(d)=>{localStorage.setItem(KEY,JSON.stringify(d));localStorage.setItem(FLAG,'1')}
+    const load=()=>{try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch{return null}}
+    const has=()=>localStorage.getItem(FLAG)==='1';
+
+    function applyToUI(d){
+      const {name,code,dni,faculty,plan,tutor,email,photoSrc}=d;
+
+      // Header (SIEMPRE iniciales)
+      uiFaculty.textContent=faculty||'';
+      uiCode.textContent=code||'';
+      uiName.textContent=name||'';
+      avatarInitials.textContent=(getInitials(name)||'??').toUpperCase();
+
+      // Card
+      if(photoSrc){ profilePhoto.src=photoSrc; } else { setDefaultPhoto(); }
+      cardName.textContent=name||'';
+      cardCode.textContent=code||'';
+      cardLevel.textContent='Pregrado';
+      cardDni.textContent=dni||'';
+      cardFaculty.textContent=faculty||'';
+      cardPlan.textContent=plan||'';
+      cardTutor.innerHTML=`${tutor||''}<br><a id="cardEmail" href="mailto:${email||''}">${email||''}</a>`;
+    }
+
+    function showProfile(){appbar.style.display='flex';screenForm.style.display='none';screenProfile.style.display='block'}
+    function showForm(){appbar.style.display='none';screenForm.style.display='block';screenProfile.style.display='none'}
+
+    function resolvePhotoSrc(){
+      return new Promise((res)=>{
+        const f=photoFileI.files&&photoFileI.files[0];
+        if(f){const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(f);return;}
+        const u=photoUrlI.value.trim(); if(u) return res(u);
+        res(null);
+      });
+    }
+
+    // Generar
+    $('#generateBtn').addEventListener('click', async e=>{
+      e.preventDefault();
+      const photoSrc=await resolvePhotoSrc();
+      const data={
+        name:nameI.value.trim(), code:codeI.value.trim(), dni:dniI.value.trim(),
+        faculty:facultyI.value.trim(), plan:planI.value.trim(),
+        tutor:tutorI.value.trim(), email:emailI.value.trim(), photoSrc
+      };
+      save(data); applyToUI(data); showProfile();
+    });
+
+    // Limpiar
+    $('#clearAllBtn').addEventListener('click', e=>{
+      e.preventDefault();
+      localStorage.removeItem(KEY); localStorage.removeItem(FLAG);
+      photoFileI.value=''; photoUrlI.value='';
+      showForm();
+    });
+
+    // Menú (3 rayas) => volver a editar con datos cargados
+    $('#btnMenu').addEventListener('click', ()=>{
+      const d=has()?load():null;
+      if(d){
+        nameI.value=d.name||''; codeI.value=d.code||''; dniI.value=d.dni||'';
+        facultyI.value=d.faculty||''; planI.value=d.plan||'';
+        tutorI.value=d.tutor||''; emailI.value=d.email||'';
+        photoFileI.value=''; photoUrlI.value=d.photoSrc||'';
+      }
+      showForm();
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+
+    // Inicio
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const d=has()?load():null;
+      if(d){applyToUI(d);showProfile()}else{showForm();setDefaultPhoto()}
+    });
+
+    // Campana placeholder
+    $('#btnBell').addEventListener('click', ()=>{/* futuro: notificaciones */});
+  </script>
 </body>
 </html>
